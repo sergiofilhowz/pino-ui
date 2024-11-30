@@ -8,7 +8,7 @@ This library is an improvement of pino-pretty. Sometimes it's too complicated to
 
 This library adds a web view for the pino logs.
 
-![log-list](./readme/log-list.png)
+![log-list](https://raw.githubusercontent.com/sergiofilhowz/pino-ui/239cd3e411fa9df7e78edf3022bbd2965eb5cfbb/readme/log-list.png)
 
 ## Installation
 
@@ -49,12 +49,12 @@ We're using JSON to read the configuration.
 
 #### Additional Fields
 
-| Field             | Type                   | Description                                                  |
-| ----------------- | ---------------------- | ------------------------------------------------------------ |
+| Field             | Type                   | Description                                                    |
+| ----------------- | ---------------------- | -------------------------------------------------------------- |
 | `levelColumn`     | String                 | Defines the column that has the log level, defaults to `level` |
-| `messageColumn`   | String                 | Defines the column that has the message, defaults to `msg`   |
-| `timestampColumn` | String                 | Defines the column that has the timestamp, defaults to `time` |
-| `levelMapping`    | Record<String, String> | Maps level to a label. Example: `{ "30": "INFO" }`           |
+| `messageColumn`   | String                 | Defines the column that has the message, defaults to `msg`     |
+| `timestampColumn` | String                 | Defines the column that has the timestamp, defaults to `time`  |
+| `levelMapping`    | Record<String, String> | Maps level to a label. Example: `{ "30": "INFO" }`             |
 
 #### Column Type
 

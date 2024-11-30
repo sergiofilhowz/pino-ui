@@ -5,6 +5,7 @@ tsconfig.json
 tsconfig.node.json
 vite.config.ts
 src/*
+readme/*
 .vscode/*
 .prettierrc
 postcss.config.js
