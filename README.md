@@ -49,12 +49,12 @@ We're using JSON to read the configuration.
 
 #### Additional Fields
 
-| Field           | Type                   | Description                                                    |
-| --------------- | ---------------------- | -------------------------------------------------------------- |
-| `levelColumn`   | String                 | Defines the column that has the log level, defaults to `level` |
-| `messageColumn` | String                 | Defines the column that has the message, defaults to `msg`     |
-| timestampColumn | String                 | Defines the column that has the timestamp, defaults to `time`  |
-| levelMapping    | Record<String, String> | Maps level to a label. Example: `{ "30": "INFO" }`             |
+| Field             | Type                   | Description                                                  |
+| ----------------- | ---------------------- | ------------------------------------------------------------ |
+| `levelColumn`     | String                 | Defines the column that has the log level, defaults to `level` |
+| `messageColumn`   | String                 | Defines the column that has the message, defaults to `msg`   |
+| `timestampColumn` | String                 | Defines the column that has the timestamp, defaults to `time` |
+| `levelMapping`    | Record<String, String> | Maps level to a label. Example: `{ "30": "INFO" }`           |
 
 #### Column Type
 
