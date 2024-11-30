@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card'
-import { useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { Details } from './Details'
 import { Drawer } from './Drawer'
 import { Logs } from './Logs'
@@ -12,20 +12,24 @@ function App() {
   const { logs, chartData, clearLogs } = useSocket({ config })
   const [selectedLog, setSelectedLog] = useState<Record<string, unknown> | null>(null)
   const [trace, setTrace] = useState<Array<Record<string, unknown>> | null>(null)
-  const onTraceOpen = (log: Record<string, unknown>) => {
-    setSelectedLog(null)
-    setTrace(logs.filter(({ reqId }) => reqId === log.reqId))
-  }
+  const logsRef = useRef(logs)
 
-  const onCloseTrace = () => {
+  logsRef.current = logs
+
+  const onTraceOpen = useCallback((log: Record<string, unknown>) => {
+    setSelectedLog(null)
+    setTrace(logsRef.current.filter(({ reqId }) => reqId === log.reqId))
+  }, [])
+
+  const onCloseTrace = useCallback(() => {
     setTrace(null)
     setSelectedLog(null)
-  }
+  }, [])
 
-  const onSelectLog = (log: Record<string, unknown>) => {
+  const onSelectLog = useCallback((log: Record<string, unknown>) => {
     setTrace(null)
     setSelectedLog(log)
-  }
+  }, [])
 
   return (
     <>

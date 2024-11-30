@@ -1,11 +1,11 @@
 import { get } from 'lodash'
 import ReactJson from 'react18-json-view'
-import { Badge } from './components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card'
 import { useGetLogDetails } from './hooks/useGetLogDetails'
 import { Column, Config } from './types'
 import 'react18-json-view/src/dark.css'
 import 'react18-json-view/src/style.css'
+import { LogLevel } from './components/LogLevel'
 
 type Props = {
   log: Record<string, unknown>
@@ -14,7 +14,7 @@ type Props = {
 }
 
 const classes = {
-  body: 'flex flex-col p-1 gap-1',
+  body: 'flex flex-col p-1 gap-1 flex-1',
   detail: 'flex items-center p-2 rounded-md even:bg-zinc-900',
   detailLabel: 'w-3/12 font-bold',
   detailValue: 'flex-1 font-bold',
@@ -38,7 +38,7 @@ export const Details: React.FC<Props> = ({ log, columns, config }) => {
           <div className={classes.detail}>
             <div className={classes.detailLabel}>Level</div>
             <div className={classes.detailValue}>
-              <Badge variant={log.level === 'ERROR' ? 'destructive' : 'default'}>{level}</Badge>
+              <LogLevel level={level} />
             </div>
           </div>
           <div className={classes.detail}>

@@ -17,9 +17,7 @@ export const useSocket = ({ config }: { config: Config }) => {
     setChartData([])
   }
 
-  useEffect(() => {
-    configRef.current = config
-  }, [config])
+  configRef.current = config
 
   useEffect(() => {
     function onConnect() {
@@ -31,7 +29,7 @@ export const useSocket = ({ config }: { config: Config }) => {
     }
 
     function onLog(value: Record<string, unknown>) {
-      setLogs((previous) => (configRef.current.ascending ? [...previous, value] : [value, ...previous]))
+      setLogs((previous) => [...previous, value])
 
       const now = Date.now()
       const currentRefDate = new Date(currentChartRef.current.date)

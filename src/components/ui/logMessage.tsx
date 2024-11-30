@@ -6,7 +6,7 @@ const logMessageVariants = cva('flex-1 whitespace-nowrap font-bold text-base', {
   variants: {
     variant: {
       center: 'text-center',
-      code: 'text-code bg-zinc-900 rounded-sm px-2 py-1 grow-0',
+      code: 'text-mono bg-zinc-900 rounded-sm px-2 py-1 grow-0',
     },
   },
   defaultVariants: {},

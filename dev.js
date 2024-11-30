@@ -5,6 +5,7 @@ import http from 'http'
 import { Server } from 'socket.io'
 import { fileURLToPath } from 'url'
 import { createServer as createViteServer } from 'vite'
+import { faker } from '@faker-js/faker'
 
 const __filename = fileURLToPath(import.meta.url)
 const app = express()
@@ -15,29 +16,59 @@ const vite = await createViteServer({
   appType: 'spa',
 })
 
+const createLog = (log) => io.emit('log', log)
+
+app.get('/seed', (req, res) => {
+  const quantity = req.query.quantity ? parseInt(req.query.quantity) : faker.number.int(10, 150)
+  const date = Date.now()
+
+  for (let i = 0; i < quantity; i++) {
+    createLog({
+      timestamp: date - (quantity - i) * 1000,
+      level: faker.helpers.weightedArrayElement([
+        { weight: 80, value: 30 },
+        { weight: 20, value: 100 },
+        { weight: 5, value: 400 },
+      ]),
+      message: faker.hacker.phrase(),
+      service: faker.helpers.arrayElement(['Default', 'Auth', 'GraphQL', 'Postgres', 'Redis']),
+      pid: 50023,
+      reqId: `req-${i}`,
+      service: 'Default',
+      context: {
+        requestPath: '/graphql',
+        userId: faker.string.uuid(),
+        sourceIp: faker.internet.ip(),
+        referer: faker.internet.url(),
+        userAgent: faker.internet.userAgent(),
+      },
+    })
+  }
+
+  res.end()
+})
+
 app.get('/new-log', (req, res) => {
-  io.emit('log', {
-    level: 30,
+  const level = (req.query.level = req.query.level || 30)
+  const service = req.query.service || 'Default'
+
+  createLog({
+    level: level,
     timestamp: String(Date.now()),
     pid: 50023,
     hostname: 'mac.local',
     reqId: 'req-3',
+    service,
     context: {
       requestPath: '/graphql',
-      userId: 'a332288a-9a13-464f-aa3a-8e4b5ff8b336',
-      sourceIp: '::1',
-      referer: 'http://localhost:5173/',
-      userAgent:
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36',
-      buildNumber: -1,
-      isEmulator: false,
-      apiRequestId: 'req-3',
+      userId: faker.string.uuid(),
+      sourceIp: faker.internet.ip(),
+      referer: faker.internet.url(),
+      userAgent: faker.internet.userAgent(),
     },
     sql: 'select * from users where id = $1',
     parameters: ['a332288a-9a13-464f-aa3a-8e4b5ff8b336'],
     environment: 'staging',
-    graphqlOperationName: 'authenticateWithProvider',
-    graphqlFieldName: 'Mutation.authenticateWithProvider',
     message: 'New postgres dialect connection',
   })
   res.end()
@@ -49,12 +80,11 @@ app.get('/config.json', (_, res) => {
       { name: 'Req #', key: 'reqId' },
       { name: 'User', key: 'context.userId' },
       { name: 'Message', key: 'message' },
-      { name: 'GraphQL Field', key: 'graphqlFieldName' },
+      { name: 'Service', key: 'service' },
     ],
     detailColumns: [
       { name: 'Req #', key: 'reqId' },
       { name: 'User', key: 'context.userId', formatter: 'code' },
-      { name: 'GraphQL Field', key: 'graphqlFieldName', formatter: 'code' },
       { name: 'SQL', key: 'sql', formatter: 'code' },
       { name: 'Parameters', key: 'parameters', formatter: 'json' },
     ],

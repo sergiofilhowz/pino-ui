@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { memo, ReactNode, useCallback, useMemo } from 'react'
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { LogLine } from './LogLine'
 import { Column, Config } from './types'
@@ -12,9 +12,26 @@ type Props = {
   config: Config
 }
 
-export const Logs: React.FC<Props> = (props) => {
+export const Logs: React.FC<Props> = memo((props) => {
   const { logs, columns, onRowClick, traceColumn, onTraceOpen, config } = props
   const columnKeys = useMemo(() => columns.map(({ key }) => key), [columns])
+
+  const map = useCallback(
+    (list: Array<any>, callback: (item: any, index: number) => ReactNode): ReactNode[] => {
+      if (config.ascending) {
+        return list.map(callback)
+      }
+
+      const result = []
+
+      for (let i = list.length - 1; i >= 0; i--) {
+        result.push(callback(list[i], i))
+      }
+
+      return result
+    },
+    [config.ascending, logs],
+  )
 
   return (
     <Table>
@@ -30,10 +47,10 @@ export const Logs: React.FC<Props> = (props) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {logs.map((logLine, index) => (
+        {map(logs, (logLine, index) => (
           <LogLine
             config={config}
-            onRowClick={() => onRowClick(logLine)}
+            onRowClick={onRowClick}
             columns={columnKeys}
             key={index}
             log={logLine}
@@ -44,4 +61,4 @@ export const Logs: React.FC<Props> = (props) => {
       </TableBody>
     </Table>
   )
-}
+})

@@ -1,15 +1,15 @@
-import React, { MouseEvent } from 'react'
+import React, { memo, MouseEvent } from 'react'
 import get from 'lodash/get'
 import { SquareArrowOutUpRightIcon } from 'lucide-react'
-import { Badge } from './components/ui/badge'
 import { TableCell, TableRow } from './components/ui/table'
 import { Button } from './components/ui/button'
 import { Config } from './types'
 import { useGetLogDetails } from './hooks/useGetLogDetails'
 import { LogMessage } from './components/ui/logMessage'
+import { LogLevel } from './components/LogLevel'
 
 type Props = {
-  onRowClick: () => void
+  onRowClick: (record: Record<string, unknown>) => void
   log: Record<string, unknown>
   columns: string[]
   config: Config
@@ -18,7 +18,7 @@ type Props = {
   traceColumn?: string
 }
 
-export const LogLine: React.FC<Props> = (props) => {
+export const LogLine: React.FC<Props> = memo((props) => {
   const { log, columns, onRowClick, traceColumn, onTraceOpen, config } = props
   const { timestamp, level } = useGetLogDetails(log, config)
   const onTraceClick = (evt: MouseEvent<HTMLButtonElement>) => {
@@ -28,13 +28,13 @@ export const LogLine: React.FC<Props> = (props) => {
   }
 
   return (
-    <TableRow onClick={onRowClick}>
+    <TableRow onClick={() => onRowClick(log)}>
       <TableCell>
         <LogMessage variant="center">{timestamp}</LogMessage>
       </TableCell>
       <TableCell>
         <LogMessage variant="center">
-          <Badge variant={level === 'ERROR' ? 'destructive' : 'default'}>{level}</Badge>
+          <LogLevel level={level} />
         </LogMessage>
       </TableCell>
       {columns.map((column) => (
@@ -53,7 +53,7 @@ export const LogLine: React.FC<Props> = (props) => {
       ))}
     </TableRow>
   )
-}
+})
 
 type MessageProps = { log: Record<string, unknown>; column: string }
 

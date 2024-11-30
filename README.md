@@ -1,8 +1,14 @@
 # pino-ui
 
+A beautiful UI for your dev logs.
+
+## What is it?
+
 This library is an improvement of pino-pretty. Sometimes it's too complicated to browse through console logs and understand all logs on a specific request.
 
 This library adds a web view for the pino logs.
+
+![log-list](./readme/log-list.png)
 
 ## Installation
 
@@ -31,26 +37,24 @@ We're using JSON to read the configuration.
 
 > **Important:** You need to add the json file with the following name (`.pino-ui.json`) on the cwd of your application
 
-| Field               | Type    | Description                                                  |
-| ------------------- | ------- | ------------------------------------------------------------ |
-| `gridColumns`       | Column  | How to display the grid columns                              |
-| `detailColumns`     | Column  | How to display the log data on the details                   |
+| Field               | Type    | Description                                                                    |
+| ------------------- | ------- | ------------------------------------------------------------------------------ |
+| `gridColumns`       | Column  | How to display the grid columns                                                |
+| `detailColumns`     | Column  | How to display the log data on the details                                     |
 | `traceColumn`       | String  | The column used for trace so we can easily separate all logs in a single trace |
-| `port`              | Number  | The port to serve the UI (Default 8080)                      |
-| `autoReset`         | Boolean | If auto reset when process is restarted, default to `false`  |
-| `ascending`         | Boolean | Wether sorting will be ascending or not, default to `false` (descending) |
-| `chartWindowMinute` | Number  | Window to capture number of logs in the log chart. Default to `1` (minute) |
+| `port`              | Number  | The port to serve the UI (Default 8080)                                        |
+| `autoReset`         | Boolean | If auto reset when process is restarted, default to `false`                    |
+| `ascending`         | Boolean | Wether sorting will be ascending or not, default to `false` (descending)       |
+| `chartWindowMinute` | Number  | Window to capture number of logs in the log chart. Default to `1` (minute)     |
 
 #### Additional Fields
 
-| Field           | Type                   | Description                                                  |
-| --------------- | ---------------------- | ------------------------------------------------------------ |
+| Field           | Type                   | Description                                                    |
+| --------------- | ---------------------- | -------------------------------------------------------------- |
 | `levelColumn`   | String                 | Defines the column that has the log level, defaults to `level` |
-| `messageColumn` | String                 | Defines the column that has the message, defaults to `msg`   |
-| timestampColumn | String                 | Defines the column that has the timestamp, defaults to `time` |
-| levelMapping    | Record<String, String> | Maps level to a label. Example: `{ "30": "INFO" }`           |
-
-
+| `messageColumn` | String                 | Defines the column that has the message, defaults to `msg`     |
+| timestampColumn | String                 | Defines the column that has the timestamp, defaults to `time`  |
+| levelMapping    | Record<String, String> | Maps level to a label. Example: `{ "30": "INFO" }`             |
 
 #### Column Type
 
