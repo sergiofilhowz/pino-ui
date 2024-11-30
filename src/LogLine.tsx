@@ -1,14 +1,12 @@
 import React, { MouseEvent } from 'react'
-import styled from 'styled-components'
-import { textStyles } from './styles/fontStyles'
-import { colors } from './styles/colors'
 import get from 'lodash/get'
-import { OpenIcon } from './OpenIcon'
+import { SquareArrowOutUpRightIcon } from 'lucide-react'
 import { Badge } from './components/ui/badge'
 import { TableCell, TableRow } from './components/ui/table'
 import { Button } from './components/ui/button'
 import { Config } from './types'
 import { useGetLogDetails } from './hooks/useGetLogDetails'
+import { LogMessage } from './components/ui/logMessage'
 
 type Props = {
   onRowClick: () => void
@@ -32,25 +30,25 @@ export const LogLine: React.FC<Props> = (props) => {
   return (
     <TableRow onClick={onRowClick}>
       <TableCell>
-        <CenteredLogMessage>{timestamp}</CenteredLogMessage>
+        <LogMessage variant="center">{timestamp}</LogMessage>
       </TableCell>
       <TableCell>
-        <CenteredLogMessage>
+        <LogMessage variant="center">
           <Badge variant={level === 'ERROR' ? 'destructive' : 'default'}>{level}</Badge>
-        </CenteredLogMessage>
+        </LogMessage>
       </TableCell>
       {columns.map((column) => (
         <TableCell key={column}>
-          <ColumnContainer>
+          <div className="flex items-center flex-nowrap">
             <Message log={log} column={column} />
             {traceColumn === column && onTraceOpen && (
-              <ButtonContainer>
+              <div className="flex grow justify-start">
                 <Button variant="secondary" size="xs" className="ml-2" onClick={onTraceClick}>
-                  <OpenIcon size={18} />
+                  <SquareArrowOutUpRightIcon size={18} />
                 </Button>
-              </ButtonContainer>
+              </div>
             )}
-          </ColumnContainer>
+          </div>
         </TableCell>
       ))}
     </TableRow>
@@ -68,41 +66,8 @@ const Message: React.FC<MessageProps> = ({ log, column }) => {
   const text = typeof field === 'string' ? field : JSON.stringify(field)
 
   if (isUuid(text)) {
-    return <LogCode>uuid:{text.slice(24, 36)}</LogCode>
+    return <LogMessage variant="code">uuid:{text.slice(24, 36)}</LogMessage>
   }
 
   return <LogMessage>{text}</LogMessage>
 }
-
-const ColumnContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: center;
-`
-
-const LogMessage = styled.div`
-  ${textStyles.body.md}
-  line-height: 28px;
-  flex: 1;
-  white-space: nowrap;
-  text-align: left;
-`
-
-const CenteredLogMessage = styled(LogMessage)`
-  text-align: center;
-`
-
-const LogCode = styled.code`
-  ${textStyles.code.sm}
-  background: ${colors.background.code};
-  padding: 4px 8px;
-  border-radius: 4px;
-`
-
-const ButtonContainer = styled.div`
-  display: flex;
-  flex: 2;
-  justify-content: flex-start;
-  flex-direction: row;
-`

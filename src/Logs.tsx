@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { LogLine } from './LogLine'
 import { Column, Config } from './types'
@@ -14,6 +14,7 @@ type Props = {
 
 export const Logs: React.FC<Props> = (props) => {
   const { logs, columns, onRowClick, traceColumn, onTraceOpen, config } = props
+  const columnKeys = useMemo(() => columns.map(({ key }) => key), [columns])
 
   return (
     <Table>
@@ -33,7 +34,7 @@ export const Logs: React.FC<Props> = (props) => {
           <LogLine
             config={config}
             onRowClick={() => onRowClick(logLine)}
-            columns={columns.map(({ key }) => key)}
+            columns={columnKeys}
             key={index}
             log={logLine}
             traceColumn={traceColumn}

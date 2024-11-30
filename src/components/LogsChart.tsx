@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
+import { Eraser } from 'lucide-react'
 import React from 'react'
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
 import { Button } from './ui/button'
@@ -27,6 +28,7 @@ export const LogsChart: React.FC<Props> = ({ count, chartData, onClear }) => {
           </div>
           <Button onClick={onClear} className="w-full sm:w-auto">
             Clear
+            <Eraser size={16} />
           </Button>
           <div className="flex">
             <button className="flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-l sm:border-t-0">

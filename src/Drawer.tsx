@@ -1,126 +1,61 @@
+import clsx from 'clsx'
 import React, { PropsWithChildren, useEffect, useState } from 'react'
-import styled from 'styled-components'
-import { textStyles } from './styles/fontStyles'
-import { colors } from './styles/colors'
-import { ChevronRightIcon } from './ChevronRight'
+import { ChevronRight } from 'lucide-react'
 
 type Props = PropsWithChildren<{
-  ariaLabel?: string
-  alwaysVisible?: boolean
   title: string
   isOpen: boolean
   onCancel: VoidFunction
-  headerContent?: React.ReactNode
-  moveLeft?: boolean
+  isStacked?: boolean
 }>
 
 export const Drawer: React.FC<Props> = (props) => {
+  const { isStacked } = props
   const [isOpen, setIsOpen] = useState(props.isOpen)
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
-    if (props.alwaysVisible) {
-      setIsOpen(props.isOpen)
-      setIsVisible(true)
-    } else if (props.isOpen) {
+    if (props.isOpen) {
       setIsVisible(true)
       setIsOpen(true)
     } else {
       setIsOpen(false)
       setTimeout(() => setIsVisible(false), 0)
     }
-  }, [props.alwaysVisible, props.isOpen])
+  }, [props.isOpen])
+
+  const drawerBody = clsx(
+    // position
+    'z-10 fixed top-0 right-0 transition-all',
+    // size
+    'flex flex-col h-dvh max-w-full',
+    // border and background
+    'border border-solid border-zinc-800 bg-card',
+    isStacked ? 'w-full pr-3/5' : 'w-3/5',
+    isVisible ? 'visible' : 'invisible',
+    isOpen ? 'translate-x-0' : 'translate-x-full',
+  )
 
   return (
-    <Container
-      aria-label={props.ariaLabel}
-      $isOpen={isOpen}
-      $isVisible={isVisible}
-      $alwaysVisible={!!props.alwaysVisible}
-      $moveLeft={props.moveLeft}
-    >
+    <div className={drawerBody}>
       {props.isOpen && props.children && (
         <>
-          <DrawerHeader>
-            <DrawerHeaderButton onClick={props.onCancel}>
-              <ChevronRightIcon size={24} />
-            </DrawerHeaderButton>
-            <DrawerTitle aria-label="Title">{props.title}</DrawerTitle>
-            {props.headerContent && <DrawerHeaderContent>{props.headerContent}</DrawerHeaderContent>}
-          </DrawerHeader>
-          <DrawerBody aria-label="Body">{props.children}</DrawerBody>
+          <div className="flex relative items-center p-4 border-b border-solid border-zinc-800">
+            <div
+              className="absolute left-2 p-1 fill-zinc-300 cursor-pointer bg-zinc-800 rounded-full hover:bg-zinc-700"
+              onClick={props.onCancel}
+            >
+              <ChevronRight size={24} />
+            </div>
+            <div className="flex-1 text-center font-bold" aria-label="Title">
+              {props.title}
+            </div>
+          </div>
+          <div className="flex overflow-auto" aria-label="Body">
+            {props.children}
+          </div>
         </>
       )}
-    </Container>
+    </div>
   )
 }
-
-const Container = styled.div<{
-  $isOpen: boolean
-  $isVisible: boolean
-  $alwaysVisible: boolean
-  $moveLeft?: boolean
-}>`
-  position: fixed;
-  top: 0px;
-  right: 0px;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  width: ${({ $moveLeft }) => ($moveLeft ? '100%' : '60%')};
-  padding-right: ${({ $moveLeft }) => ($moveLeft ? '60%' : '0')};
-  max-width: 100%;
-  height: 100dvh;
-  visibility: ${({ $isVisible }) => ($isVisible ? 'visible' : 'hidden')};
-  background: ${colors.background.inactive};
-  border: 1px solid ${colors.background.active};
-  transition: all ease 0.3s;
-  transform: ${({ $alwaysVisible }) => ($alwaysVisible ? 'translateX(100%)' : 'translateX(110%)')};
-  ${({ $isOpen }) => $isOpen && 'transform: translateX(0%);'}
-`
-
-const DrawerBody = styled.div`
-  flex: 1;
-  overflow: auto;
-  max-width: 100%;
-`
-
-const DrawerHeaderButton = styled.div`
-  ${textStyles.body.sm}
-  position: absolute;
-  left: 16px;
-  cursor: pointer;
-  fill: white;
-  background: ${colors.button.inactiveBg};
-  padding: 4px;
-  border-radius: 999px;
-
-  &:hover {
-    background: ${colors.button.hoverBg};
-  }
-  &:active {
-    background: ${colors.button.activeBg};
-  }
-`
-
-const DrawerHeader = styled.div`
-  ${textStyles.label.sm}
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px;
-  border-bottom: 1px solid ${colors.button.inactiveBg};
-`
-
-const DrawerTitle = styled.div`
-  flex: 1;
-  text-align: center;
-`
-
-const DrawerHeaderContent = styled.div`
-  display: flex;
-  position: absolute;
-  right: 16px;
-`

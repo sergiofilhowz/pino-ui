@@ -1,14 +1,11 @@
-import styled from 'styled-components'
-import { textStyles } from './styles/fontStyles'
-import { Column, Config } from './types'
-import ReactJson from 'react18-json-view'
 import { get } from 'lodash'
-import 'react18-json-view/src/style.css'
-import 'react18-json-view/src/dark.css'
-import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card'
+import ReactJson from 'react18-json-view'
 import { Badge } from './components/ui/badge'
-import { colors } from './styles/colors'
+import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card'
 import { useGetLogDetails } from './hooks/useGetLogDetails'
+import { Column, Config } from './types'
+import 'react18-json-view/src/dark.css'
+import 'react18-json-view/src/style.css'
 
 type Props = {
   log: Record<string, unknown>
@@ -16,45 +13,53 @@ type Props = {
   config: Config
 }
 
+const classes = {
+  body: 'flex flex-col p-1 gap-1',
+  detail: 'flex items-center p-2 rounded-md even:bg-zinc-900',
+  detailLabel: 'w-3/12 font-bold',
+  detailValue: 'flex-1 font-bold',
+  code: 'flex-1 font-mono text-sm font-bold px-2 py-1 bg-zinc-800 inline-block rounded-md',
+}
+
 export const Details: React.FC<Props> = ({ log, columns, config }) => {
   const { timestamp, level, message } = useGetLogDetails(log, config)
 
   return (
-    <Container>
+    <div className={classes.body}>
       <Card>
         <CardHeader>
           <CardTitle>Log details</CardTitle>
         </CardHeader>
         <CardContent>
-          <Detail>
-            <DetailLabel>Timestamp</DetailLabel>
-            <DetailValue>{timestamp}</DetailValue>
-          </Detail>
-          <Detail>
-            <DetailLabel>Level</DetailLabel>
-            <DetailValue>
+          <div className={classes.detail}>
+            <div className={classes.detailLabel}>Timestamp</div>
+            <div className={classes.detailValue}>{timestamp}</div>
+          </div>
+          <div className={classes.detail}>
+            <div className={classes.detailLabel}>Level</div>
+            <div className={classes.detailValue}>
               <Badge variant={log.level === 'ERROR' ? 'destructive' : 'default'}>{level}</Badge>
-            </DetailValue>
-          </Detail>
-          <Detail>
-            <DetailLabel>Message</DetailLabel>
-            <DetailValue>{message}</DetailValue>
-          </Detail>
+            </div>
+          </div>
+          <div className={classes.detail}>
+            <div className={classes.detailLabel}>Message</div>
+            <div className={classes.detailValue}>{message}</div>
+          </div>
           {columns
             .filter(({ key }) => !!get(log, key))
             .map(({ name, key, formatter }) => (
-              <Detail key={key}>
-                <DetailLabel>{name}</DetailLabel>
-                <DetailValue>
+              <div className={classes.detail} key={key}>
+                <div className={classes.detailLabel}>{name}</div>
+                <div className={classes.detailValue}>
                   {formatter === 'json' ? (
                     <ReactJson src={get(log, key) as any} dark />
                   ) : formatter === 'code' ? (
-                    <Code>{get(log, key) as string}</Code>
+                    <div className={classes.code}>{get(log, key) as string}</div>
                   ) : (
                     (get(log, key) as string)
                   )}
-                </DetailValue>
-              </Detail>
+                </div>
+              </div>
             ))}
         </CardContent>
       </Card>
@@ -64,46 +69,11 @@ export const Details: React.FC<Props> = ({ log, columns, config }) => {
           <CardTitle>JSON Blob</CardTitle>
         </CardHeader>
         <CardContent>
-          <DetailValue>
+          <div className={classes.detailValue}>
             <ReactJson src={log} dark />
-          </DetailValue>
+          </div>
         </CardContent>
       </Card>
-    </Container>
+    </div>
   )
 }
-
-const Container = styled.div`
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-`
-
-const Detail = styled.div`
-  display: flex;
-  padding: 8px;
-  border-radius: 8px;
-
-  &:nth-child(even) {
-    background: rgba(222, 224, 228, 0.07);
-  }
-`
-
-const DetailLabel = styled.div`
-  ${textStyles.label.sm}
-  flex: 1;
-`
-
-const DetailValue = styled.div`
-  ${textStyles.body.sm}
-  flex: 2;
-`
-
-const Code = styled.div`
-  ${textStyles.code.sm}
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 4px;
-  background: ${colors.background.code};
-`

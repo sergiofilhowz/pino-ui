@@ -40,7 +40,7 @@ function App() {
           onTraceOpen={onTraceOpen}
         />
       </Card>
-      <Drawer isOpen={!!trace} onCancel={onCloseTrace} title="Trace view" moveLeft={!!selectedLog}>
+      <Drawer isOpen={!!trace} onCancel={onCloseTrace} title="Trace view" isStacked={!!selectedLog}>
         <Logs config={config} logs={trace ?? []} columns={config.gridColumns} onRowClick={setSelectedLog} />
       </Drawer>
       <Drawer isOpen={!!selectedLog} onCancel={() => setSelectedLog(null)} title="Log view">
