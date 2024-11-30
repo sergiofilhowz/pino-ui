@@ -1,0 +1,12 @@
+dev.js
+eslint.config.js
+tsconfig.app.json
+tsconfig.json
+tsconfig.node.json
+vite.config.ts
+src/*
+.vscode/*
+.prettierrc
+postcss.config.js
+tailwind.config.js
+components.json
