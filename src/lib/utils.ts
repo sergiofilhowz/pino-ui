@@ -6,13 +6,17 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-const upper = (str: string | unknown) => (typeof str === 'string' ? str?.toUpperCase() : str)
+const upper = (str: string | unknown) => (typeof str === 'string' ? str?.toUpperCase() : String(str))
+
+export const getLogLevel = (log: Record<string, unknown>, config: Config) => {
+  const level = log[config.levelColumn ?? 'level'] as string
+  const levelColumn = config.levelMapping?.[String(level)] ?? level
+  return upper(levelColumn)
+}
 
 export const getLog = (log: Record<string, unknown>, config: Config) => {
-  const getLogLevel = (level: string | number) => config.levelMapping?.[String(level)] ?? level
   const timestampColumn = log[config.timestampColumn ?? 'time']
-  const levelColumn = getLogLevel(log[config.levelColumn ?? 'level'] as string)
-  const level = upper(levelColumn)
+  const level = getLogLevel(log, config)
 
   const date = new Date(Number(timestampColumn))
   const timestamp = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`

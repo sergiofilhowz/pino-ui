@@ -1,39 +1,30 @@
 import { Card } from '@/components/ui/card'
-import { useCallback, useRef, useState } from 'react'
 import { Details } from './Details'
 import { Drawer } from './Drawer'
 import { Logs } from './Logs'
 import { LogsChart } from './components/LogsChart'
 import { useGetConfig } from './hooks/useGetConfig'
-import { useSocket } from './hooks/useSocket'
+import { useLogs } from './hooks/useLogs'
 
 function App() {
   const config = useGetConfig()
-  const { logs, chartData, clearLogs } = useSocket({ config })
-  const [selectedLog, setSelectedLog] = useState<Record<string, unknown> | null>(null)
-  const [trace, setTrace] = useState<Array<Record<string, unknown>> | null>(null)
-  const logsRef = useRef(logs)
-
-  logsRef.current = logs
-
-  const onTraceOpen = useCallback((log: Record<string, unknown>) => {
-    setSelectedLog(null)
-    setTrace(logsRef.current.filter(({ reqId }) => reqId === log.reqId))
-  }, [])
-
-  const onCloseTrace = useCallback(() => {
-    setTrace(null)
-    setSelectedLog(null)
-  }, [])
-
-  const onSelectLog = useCallback((log: Record<string, unknown>) => {
-    setTrace(null)
-    setSelectedLog(log)
-  }, [])
+  const {
+    logs,
+    selectedLog,
+    selectedLogs,
+    selectedLogsTitle,
+    chartData,
+    clearLogs,
+    onTraceOpen,
+    onTraceClose,
+    onSelectLog,
+    onChartClick,
+    setSelectedLog,
+  } = useLogs({ config })
 
   return (
     <>
-      <LogsChart onClear={clearLogs} chartData={chartData} count={logs.length} />
+      <LogsChart onClear={clearLogs} chartData={chartData} count={logs.length} onChartClick={onChartClick} />
       <Card>
         <Logs
           config={config}
@@ -44,8 +35,8 @@ function App() {
           onTraceOpen={onTraceOpen}
         />
       </Card>
-      <Drawer isOpen={!!trace} onCancel={onCloseTrace} title="Trace view" isStacked={!!selectedLog}>
-        <Logs config={config} logs={trace ?? []} columns={config.gridColumns} onRowClick={setSelectedLog} />
+      <Drawer isOpen={!!selectedLogs} onCancel={onTraceClose} title={selectedLogsTitle} isStacked={!!selectedLog}>
+        <Logs config={config} logs={selectedLogs ?? []} columns={config.gridColumns} onRowClick={setSelectedLog} />
       </Drawer>
       <Drawer isOpen={!!selectedLog} onCancel={() => setSelectedLog(null)} title="Log view">
         {selectedLog && <Details log={selectedLog} columns={config.detailColumns} config={config} />}

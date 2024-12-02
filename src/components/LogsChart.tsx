@@ -2,8 +2,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import { Eraser } from 'lucide-react'
 import React from 'react'
-import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
+import { Bar, BarChart, CartesianGrid, Cell, XAxis } from 'recharts'
 import { Button } from './ui/button'
+import { Level } from '../types'
 
 export const description = 'An interactive bar chart'
 
@@ -11,13 +12,22 @@ const chartConfig = {
   views: { label: 'Logs count' },
 } satisfies ChartConfig
 
+type ChartEntry = { date: string; count: number; level: Level }
+
 type Props = {
-  chartData: { date: string; count: number }[]
+  chartData: ChartEntry[]
   count: number
   onClear: () => void
+  onChartClick: (data: ChartEntry) => void
 }
 
-export const LogsChart: React.FC<Props> = ({ count, chartData, onClear }) => {
+const colors: Record<Level, string> = {
+  error: '#f43f5e',
+  warn: '#eab308',
+  info: '#3b82f6',
+}
+
+export const LogsChart: React.FC<Props> = ({ count, chartData, onClear, onChartClick }) => {
   return (
     <Card>
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
@@ -69,7 +79,11 @@ export const LogsChart: React.FC<Props> = ({ count, chartData, onClear }) => {
                   />
                 }
               />
-              <Bar dataKey="count" fill={`hsl(var(--chart-1))`} />
+              <Bar dataKey="count" fill={colors.info}>
+                {chartData.map((entry, index) => (
+                  <Cell key={index} fill={colors[entry.level] ?? colors.info} onClick={() => onChartClick(entry)} />
+                ))}
+              </Bar>
             </BarChart>
           </ChartContainer>
         </CardContent>
