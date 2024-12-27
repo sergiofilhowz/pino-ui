@@ -12,9 +12,7 @@ export const useGetConfig = () => {
   useEffect(() => {
     fetch('/config.json')
       .then((response) => response.json())
-      .then((result) => {
-        if (result) setConfig(result)
-      })
+      .then((result) => setConfig(result ?? defaultConfig))
   }, [])
   return config
 }

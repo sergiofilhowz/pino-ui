@@ -27,8 +27,9 @@ app.get('/seed', (req, res) => {
       timestamp: date - (quantity - i) * 1000,
       level: faker.helpers.weightedArrayElement([
         { weight: 80, value: 30 },
-        { weight: 20, value: 100 },
-        { weight: 5, value: 400 },
+        { weight: 20, value: 40 },
+        { weight: 5, value: 50 },
+        { weight: 2, value: 60 },
       ]),
       message: faker.hacker.phrase(),
       service: faker.helpers.arrayElement(['Default', 'Auth', 'GraphQL', 'Postgres', 'Redis']),
@@ -94,8 +95,9 @@ app.get('/config.json', (_, res) => {
     messageColumn: 'message',
     levelMapping: {
       30: 'INFO',
-      100: 'WARN',
-      400: 'ERROR',
+      40: 'WARN',
+      50: 'ERROR',
+      60: 'FATAL',
     },
   })
 })

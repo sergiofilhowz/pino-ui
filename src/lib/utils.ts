@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { Config } from '../types'
+import { Config, Log, Level } from '../types'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -8,10 +8,10 @@ export function cn(...inputs: ClassValue[]) {
 
 const upper = (str: string | unknown) => (typeof str === 'string' ? str?.toUpperCase() : String(str))
 
-export const getLogLevel = (log: Record<string, unknown>, config: Config) => {
+export const getLogLevel = (log: Log, config: Config): Level => {
   const level = log[config.levelColumn ?? 'level'] as string
   const levelColumn = config.levelMapping?.[String(level)] ?? level
-  return upper(levelColumn)
+  return upper(levelColumn) as Level
 }
 
 export const getLog = (log: Record<string, unknown>, config: Config) => {

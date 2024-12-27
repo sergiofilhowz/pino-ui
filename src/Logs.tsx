@@ -1,5 +1,5 @@
-import React, { memo, ReactNode, useCallback, useMemo } from 'react'
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import React, { memo, ReactNode, useCallback, useMemo } from 'react'
 import { LogLine } from './LogLine'
 import { Column, Config } from './types'
 

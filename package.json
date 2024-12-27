@@ -1,6 +1,6 @@
 {
   "name": "pino-ui",
-  "version": "0.0.1-alpha.20",
+  "version": "1.0.0",
   "type": "module",
   "license": "MIT",
   "scripts": {
@@ -17,19 +17,12 @@
     "pino-ui": "bin.js"
   },
   "dependencies": {
-    "@radix-ui/react-slot": "^1.1.0",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.1",
     "colors": "^1.4.0",
     "express": "^4.21.1",
-    "lucide-react": "^0.456.0",
     "pino-abstract-transport": "^2.0.0",
     "pump": "^3.0.2",
-    "recharts": "^2.13.3",
     "serve-static": "^1.16.2",
-    "socket.io": "^4.8.1",
-    "tailwind-merge": "^2.5.4",
-    "tailwindcss-animate": "^1.0.7"
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
@@ -55,6 +48,13 @@
     "ts-node": "^10.9.2",
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.11.0",
-    "vite": "^5.4.10"
+    "lucide-react": "^0.456.0",
+    "@radix-ui/react-slot": "^1.1.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "vite": "^5.4.10",
+    "recharts": "^2.13.3",
+    "tailwind-merge": "^2.5.4",
+    "tailwindcss-animate": "^1.0.7"
   }
 }
