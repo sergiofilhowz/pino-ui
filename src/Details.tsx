@@ -5,10 +5,10 @@ import 'react18-json-view/src/style.css'
 import { LogLevel } from './components/LogLevel'
 import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card'
 import { useGetLogDetails } from './hooks/useGetLogDetails'
-import { Column, Config } from './types'
+import { Column, Config, Log } from './types'
 
 type Props = {
-  log: Record<string, unknown>
+  log: Log
   columns: Column[]
   config: Config
 }

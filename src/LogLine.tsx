@@ -3,18 +3,18 @@ import get from 'lodash/get'
 import { SquareArrowOutUpRightIcon } from 'lucide-react'
 import { TableCell, TableRow } from './components/ui/table'
 import { Button } from './components/ui/button'
-import { Config } from './types'
+import { Config, Log } from './types'
 import { useGetLogDetails } from './hooks/useGetLogDetails'
 import { LogMessage } from './components/ui/logMessage'
 import { LogLevel } from './components/LogLevel'
 
 type Props = {
-  onRowClick: (record: Record<string, unknown>) => void
-  log: Record<string, unknown>
+  onRowClick: (record: Log) => void
+  log: Log
   columns: string[]
   config: Config
 
-  onTraceOpen?: (record: Record<string, unknown>) => void
+  onTraceOpen?: (record: Log) => void
   traceColumn?: string
 }
 
@@ -55,7 +55,7 @@ export const LogLine: React.FC<Props> = memo((props) => {
   )
 })
 
-type MessageProps = { log: Record<string, unknown>; column: string }
+type MessageProps = { log: Log; column: string }
 
 const isUuid = (value?: string) => {
   return value?.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)

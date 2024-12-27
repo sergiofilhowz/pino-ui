@@ -1,13 +1,13 @@
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import React, { memo, ReactNode, useCallback, useMemo } from 'react'
 import { LogLine } from './LogLine'
-import { Column, Config } from './types'
+import { Column, Config, Log } from './types'
 
 type Props = {
-  logs: Record<string, unknown>[]
+  logs: Log[]
   columns: Column[]
-  onRowClick: (record: Record<string, unknown>) => void
-  onTraceOpen?: (record: Record<string, unknown>) => void
+  onRowClick: (record: Log) => void
+  onTraceOpen?: (record: Log) => void
   traceColumn?: string
   config: Config
 }

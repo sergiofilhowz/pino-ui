@@ -1,17 +1,17 @@
 import { useMemo } from 'react'
-import { Config } from '../types'
+import { Config, Log } from '../types'
 
 const upper = (str: string | unknown): string => {
   return typeof str === 'string' ? str?.toUpperCase() : String(str)
 }
 
-type Return = {
+type HookResult = {
   level: string
   timestamp: string
   message: string
 }
 
-export const useGetLogDetails = (log: Record<string, unknown>, config: Config): Return => {
+export const useGetLogDetails = (log: Log, config: Config): HookResult => {
   const { level, timestamp, message } = useMemo(() => {
     const getLogLevel = (level: string | number) => config.levelMapping?.[String(level)] ?? level
     const timestampColumn = log[config.timestampColumn ?? 'time']

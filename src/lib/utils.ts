@@ -14,7 +14,7 @@ export const getLogLevel = (log: Log, config: Config): Level => {
   return upper(levelColumn) as Level
 }
 
-export const getLog = (log: Record<string, unknown>, config: Config) => {
+export const getLog = (log: Log, config: Config) => {
   const timestampColumn = log[config.timestampColumn ?? 'time']
   const level = getLogLevel(log, config)
 
