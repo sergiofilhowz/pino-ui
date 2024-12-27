@@ -4,7 +4,8 @@ export type Column = {
   formatter?: 'text' | 'multiline_text' | 'numeric' | 'code' | 'sql' | 'json' | 'uuid' | 'duration' | 'timestamp'
 }
 
-export type Level = 'error' | 'warn' | 'info'
+export type Log = Record<string, unknown>
+export type Level = 'ERROR' | 'WARN' | 'INFO' | 'FATAL' | 'DEBUG' | 'TRACE'
 
 export type Config = {
   gridColumns: Column[]

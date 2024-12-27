@@ -1,47 +1,32 @@
+import { get } from 'lodash'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { io } from 'socket.io-client'
-import { Config, Level } from '../types'
-import { getLogLevel } from '../lib/utils'
-import { get } from 'lodash'
+import { Config, Log } from '../types'
+import { ChartData, useChartData } from './useChartData'
 
 const socket = io('/')
-const oneMinute = 60 * 1000
-const defaultChartWindow = 1 * oneMinute // one minute
-
-type ChartData = { date: string; count: number; level: Level }
 
 export const useLogs = ({ config }: { config: Config }) => {
   const [isConnected, setIsConnected] = useState(socket.connected)
-  const [logs, setLogs] = useState<Record<string, unknown>[]>([])
-  const [chartData, setChartData] = useState<ChartData[]>([])
-  const chartRef = useRef({} as Record<string, Array<Record<string, unknown>>>)
-  const [selectedLog, setSelectedLog] = useState<Record<string, unknown> | null>(null)
-  const [selectedLogs, setSelectedLogs] = useState<Array<Record<string, unknown>> | null>(null)
+  const [logs, setLogs] = useState<Log[]>([])
+  const [selectedLog, setSelectedLog] = useState<Log | null>(null)
+  const [selectedLogs, setSelectedLogs] = useState<Array<Log> | null>(null)
   const [selectedLogsTitle, setSelectedLogsTitle] = useState<string>('Trace view')
 
-  const currentChartRef = useRef<ChartData>({
-    date: new Date().toISOString(),
-    count: 0,
-    level: 'info',
-  })
   const configRef = useRef<Config>(config)
   const logsRef = useRef(logs)
+
+  const { chartData, onChartTickClick, updateChartData, clearChartData } = useChartData(config)
 
   logsRef.current = logs
   configRef.current = config
 
   const clearLogs = () => {
     setLogs([])
-    setChartData([])
+    clearChartData()
   }
 
-  const onChartClick = useCallback((data: ChartData) => {
-    setSelectedLogs(chartRef.current[data.date] ?? null)
-    const date = new Date(data.date)
-    setSelectedLogsTitle(`Logs of span ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`)
-  }, [])
-
-  const onTraceOpen = useCallback((log: Record<string, unknown>) => {
+  const onTraceOpen = useCallback((log: Log) => {
     setSelectedLog(null)
 
     const traceColumn = configRef.current.traceColumn
@@ -58,7 +43,7 @@ export const useLogs = ({ config }: { config: Config }) => {
     setSelectedLog(null)
   }, [])
 
-  const onSelectLog = useCallback((log: Record<string, unknown> | null) => {
+  const onSelectLog = useCallback((log: Log | null) => {
     setSelectedLogs(null)
     setSelectedLog(log)
   }, [])
@@ -72,48 +57,9 @@ export const useLogs = ({ config }: { config: Config }) => {
       setIsConnected(false)
     }
 
-    function onLog(value: Record<string, unknown>) {
+    function onLog(value: Log) {
       setLogs((previous) => [...previous, value])
-
-      const now = Date.now()
-      const currentRefDate = new Date(currentChartRef.current.date)
-      const chartWindow = configRef.current.chartWindowMinute
-        ? configRef.current.chartWindowMinute * oneMinute
-        : defaultChartWindow
-      const level = getLogLevel(value, configRef.current).toLowerCase() as Level
-
-      if (currentRefDate.getTime() < now - chartWindow) {
-        const gap = now - currentRefDate.getTime()
-        const gapCount = Math.floor(gap / chartWindow)
-        const current = currentChartRef.current
-
-        setChartData((previous): ChartData[] => {
-          const gapList = Array.from({ length: gapCount - 1 }, (_, index): ChartData => {
-            const date = new Date(current.date)
-            date.setMilliseconds(date.getMilliseconds() + (index + 1) * chartWindow)
-
-            return { date: date.toISOString(), count: 0, level: 'info' }
-          })
-
-          return [...previous, current, ...gapList]
-        })
-
-        currentChartRef.current = {
-          date: new Date(now).toISOString(),
-          count: 1,
-          level,
-        }
-        chartRef.current[currentChartRef.current.date] = [value]
-      } else {
-        currentChartRef.current.count += 1
-        chartRef.current[currentChartRef.current.date]?.push(value)
-
-        if (level === 'error') {
-          currentChartRef.current.level = 'error'
-        } else if (level === 'warn' && currentChartRef.current.level !== 'error') {
-          currentChartRef.current.level = 'warn'
-        }
-      }
+      updateChartData(value)
     }
 
     socket.on('connect', onConnect)
@@ -126,7 +72,16 @@ export const useLogs = ({ config }: { config: Config }) => {
       socket.off('disconnect', onDisconnect)
       socket.off('log', onLog)
     }
-  }, [])
+  }, [updateChartData])
+
+  const onChartClick = useCallback(
+    (data: ChartData) => {
+      const { logs, title } = onChartTickClick(data)
+      setSelectedLogs(logs)
+      setSelectedLogsTitle(title)
+    },
+    [onChartTickClick],
+  )
 
   return {
     isConnected,

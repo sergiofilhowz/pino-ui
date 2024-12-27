@@ -21,10 +21,17 @@ type Props = {
   onChartClick: (data: ChartEntry) => void
 }
 
+const RED = '#f43f5e'
+const YELLOW = '#eab308'
+const BLUE = '#3b82f6'
+
 const colors: Record<Level, string> = {
-  error: '#f43f5e',
-  warn: '#eab308',
-  info: '#3b82f6',
+  FATAL: RED,
+  ERROR: RED,
+  WARN: YELLOW,
+  INFO: BLUE,
+  DEBUG: BLUE,
+  TRACE: BLUE,
 }
 
 export const LogsChart: React.FC<Props> = ({ count, chartData, onClear, onChartClick }) => {
@@ -79,9 +86,9 @@ export const LogsChart: React.FC<Props> = ({ count, chartData, onClear, onChartC
                   />
                 }
               />
-              <Bar dataKey="count" fill={colors.info}>
+              <Bar dataKey="count" fill={colors.INFO}>
                 {chartData.map((entry, index) => (
-                  <Cell key={index} fill={colors[entry.level] ?? colors.info} onClick={() => onChartClick(entry)} />
+                  <Cell key={index} fill={colors[entry.level] ?? colors.INFO} onClick={() => onChartClick(entry)} />
                 ))}
               </Bar>
             </BarChart>

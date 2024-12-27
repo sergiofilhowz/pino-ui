@@ -1,6 +1,6 @@
 import clsx from 'clsx'
-import React, { PropsWithChildren, useEffect, useState } from 'react'
 import { ChevronRight } from 'lucide-react'
+import React, { PropsWithChildren, useEffect, useState } from 'react'
 
 type Props = PropsWithChildren<{
   title: string

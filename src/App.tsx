@@ -5,6 +5,7 @@ import { Logs } from './Logs'
 import { LogsChart } from './components/LogsChart'
 import { useGetConfig } from './hooks/useGetConfig'
 import { useLogs } from './hooks/useLogs'
+import { useKeyPress } from './hooks/useKeyPress'
 
 function App() {
   const config = useGetConfig()
@@ -21,6 +22,8 @@ function App() {
     onChartClick,
     setSelectedLog,
   } = useLogs({ config })
+
+  useKeyPress('Escape', onTraceClose, [])
 
   return (
     <>
