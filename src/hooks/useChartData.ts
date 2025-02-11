@@ -8,35 +8,35 @@ const DEFAULT_CHART_WINDOW = 1 * ONE_MINUTE_MS
 
 export type ChartData = { date: string; count: number; level: Level }
 
+const initialChartData: ChartData = { date: new Date().toISOString(), count: 0, level: 'INFO' }
+const defaultChartData: ChartData[] = [{ ...initialChartData }]
+
 export const useChartData = (config: Config) => {
-  const [chartData, setChartData] = useState<ChartData[]>([])
+  const [chartData, setChartData] = useState<ChartData[]>(defaultChartData)
   const chartRef = useRef<Record<string, Array<Log>>>({})
-  const currentChartRef = useRef<ChartData>()
+  const currentChartRef = useRef<ChartData>(defaultChartData[0])
   const configRef = useRef<Config>(config)
   configRef.current = config
 
   const handleNewTimeWindow = useCallback((now: number, chartWindow: number, value: Log) => {
     const current = currentChartRef.current
-
-    if (current) {
-      const gap = now - new Date(current.date).getTime()
-      const gapCount = Math.floor(gap / chartWindow)
-
-      setChartData((previous) => [...previous, current, ...createGapEntries(current.date, gapCount, chartWindow)])
-    }
-
     const level = getLogLevel(value, configRef.current)
     const date = new Date(now).toISOString()
 
     currentChartRef.current = { date, count: 1, level }
     chartRef.current[date] = [value]
+
+    const gap = now - new Date(current.date).getTime()
+    const gapCount = Math.floor(gap / chartWindow)
+
+    setChartData((previous) => [
+      ...previous,
+      ...createGapEntries(current.date, gapCount, chartWindow),
+      currentChartRef.current,
+    ])
   }, [])
 
   const updateExistingTimeWindow = useCallback((value: Log) => {
-    if (!currentChartRef.current) {
-      return
-    }
-
     const level = getLogLevel(value, configRef.current)
 
     currentChartRef.current.count += 1
@@ -48,11 +48,12 @@ export const useChartData = (config: Config) => {
     chartRef.current[currentDate].push(value)
 
     // Update level based on priority (error > warn > info)
-
     const currentLevel = currentChartRef.current.level
     if (getLevelPriority(level) < getLevelPriority(currentLevel)) {
       currentChartRef.current.level = level
     }
+
+    setChartData((previous) => [...previous])
   }, [])
 
   const updateChartData = useCallback(
@@ -60,8 +61,8 @@ export const useChartData = (config: Config) => {
       const now = Date.now()
       const chartWindow = (configRef.current.chartWindowMinute ?? DEFAULT_CHART_WINDOW) * ONE_MINUTE_MS
 
-      if (!currentChartRef.current) {
-        return handleNewTimeWindow(now, chartWindow, value)
+      if (currentChartRef.current.count === 0) {
+        currentChartRef.current.date = new Date(now).toISOString()
       }
 
       const currentRefDate = new Date(currentChartRef.current.date)
@@ -76,9 +77,9 @@ export const useChartData = (config: Config) => {
   )
 
   const clearChartData = useCallback(() => {
-    setChartData([])
     chartRef.current = {}
-    currentChartRef.current = undefined
+    currentChartRef.current = { ...initialChartData }
+    setChartData([currentChartRef.current])
   }, [])
 
   const onChartTickClick = useCallback(
