@@ -53,16 +53,16 @@ table {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-family: 'PT Sans', serif;
+  font-family: 'DM Sans', serif;
   font-optical-sizing: auto;
 }
 
 button, textarea {
-  font-family: 'PT Sans', serif;
+  font-family: 'DM Sans', serif;
 }
 
 pre, code {
-  font-family: 'PT Mono', Courier, monospace;
+  font-family: 'DM Mono', Courier, monospace;
   font-size: 14px;
 }
 

@@ -2,7 +2,7 @@ import * as React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
-const logMessageVariants = cva('flex-1 whitespace-nowrap font-bold text-base', {
+const logMessageVariants = cva('flex-1 whitespace-nowrap font-bold text-base text-sm', {
   variants: {
     variant: {
       center: 'text-center',

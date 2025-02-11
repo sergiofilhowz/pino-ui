@@ -14,7 +14,7 @@ type Props = {
 }
 
 const classes = {
-  body: 'flex flex-col p-1 gap-1 flex-1',
+  body: 'flex flex-col p-1 gap-1 flex-1 text-sm',
   detail: 'flex items-center p-2 rounded-md even:bg-zinc-900',
   detailLabel: 'w-3/12 font-bold',
   detailValue: 'flex-1 font-bold',
