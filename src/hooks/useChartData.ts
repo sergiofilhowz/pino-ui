@@ -4,7 +4,7 @@ import { getLogLevel } from '../lib/utils'
 import { createGapEntries, getLevelPriority } from './utils/chartDataUtils'
 
 const ONE_MINUTE_MS = 60 * 1000
-const DEFAULT_CHART_WINDOW = 1 * ONE_MINUTE_MS
+const DEFAULT_CHART_WINDOW = 5 // 5 minutes
 
 export type ChartData = { date: string; count: number; level: Level }
 
